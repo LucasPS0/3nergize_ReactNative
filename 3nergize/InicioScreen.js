@@ -1,10 +1,11 @@
 import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-
+import Apresentacao from "./src/Apresentacao";
 export default function InicioScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <Text>Inicio Screen</Text>
+      <Apresentacao/>
     </View>
   );
 }
