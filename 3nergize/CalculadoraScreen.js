@@ -1,128 +1,101 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import { View, Text, TextInput, Button, StyleSheet } from "react-native";
+import DateTimePicker from "@react-native-community/datetimepicker";
+import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { setValorRS } from "./redux/actions/variableActions";
+import { connect } from "react-redux";
 
-export default class CalculatorScreen extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      valorInicial: '',
-      valorFinal: '',
-      dataInicial: '',
-      dataFinal: '',
-      consumo: '',
-      periodo: '',
-      showDatePicker: false,
-      isStartDate: true,
-      tarifaConsumo: null,
-      taxaIluminacao: null,
-      valorRS: '',
-    };
-  }
+const CalculatorScreen = () => {
+  const [valorInicial, setValorInicial] = useState("");
+  const [valorFinal, setValorFinal] = useState("");
+  const [dataInicial, setDataInicial] = useState("");
+  const [dataFinal, setDataFinal] = useState("");
+  const [consumo, setConsumo] = useState("");
+  const [periodo, setPeriodo] = useState("");
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [isStartDate, setIsStartDate] = useState(true);
+  const [tarifaConsumo, setTarifaConsumo] = useState(null);
+  const [taxaIluminacao, setTaxaIluminacao] = useState(null);
+  const [valorRS, setvalorRs] = useState(null);
+  const dispatch = useDispatch();
 
-  componentDidMount() {
-    this.fetchApiData();
-  }
 
-  // Método para buscar dados da API
-  fetchApiData = async () => {
+  useEffect(() => {
+    fetchApiData();
+  });
+
+  const fetchApiData = async () => {
     try {
-      const response = await axios.get(
-        'https://apise.way2.com.br/v1/tarifas',
-        {
-          params: {
-            apikey: '2163780d87ee4237884c498ece5ea7cc',
-            agente: 'CELPE',
-            ano: '2022',
-          },
-        }
-      );
+      const response = await axios.get("https://apise.way2.com.br/v1/tarifas", {
+        params: {
+          apikey: "2163780d87ee4237884c498ece5ea7cc",
+          agente: "CELPE",
+          ano: "2022",
+        },
+      });
 
       const data = response.data;
       const tarifademandatusd = data[0].tarifaconsumotusd;
-      this.setState({ tarifaConsumo: tarifademandatusd });
+      setTarifaConsumo(tarifademandatusd);
     } catch (error) {
       console.log(error);
-      throw new Error('Failed to fetch tarifa data');
+      throw new Error("Failed to fetch tarifa data");
     }
 
     try {
-      const response = await axios.get(
-        'https://apise.way2.com.br/v1/tarifas',
-        {
-          params: {
-            apikey: '2163780d87ee4237884c498ece5ea7cc',
-            agente: 'CELPE',
-            ano: '2022',
-          },
-        }
-      );
+      const response = await axios.get("https://apise.way2.com.br/v1/tarifas", {
+        params: {
+          apikey: "2163780d87ee4237884c498ece5ea7cc",
+          agente: "CELPE",
+          ano: "2022",
+        },
+      });
 
       const data = response.data;
       const tarifademandatusd = data[0].tarifademandatusd;
-      this.setState({ taxaIluminacao: tarifademandatusd });
+      setTaxaIluminacao(tarifademandatusd);
     } catch (error) {
       console.log(error);
-      throw new Error('Failed to fetch tarifa base data');
-    }
-
-    try {
-      const response = await axios.get(
-        'https://apise.way2.com.br/v1/bandeiras',
-        {
-          params: {
-            apikey: '2163780d87ee4237884c498ece5ea7cc',
-            datainicial: '2023-03-01',
-            datafinal: '2023-03-31',
-          },
-        }
-      );
-
-      const data = response.data;
-      const value = data.items[0].value;
-      this.setState({ tarifaBandeira: value });
-    } catch (error) {
-      console.log(error);
-      throw new Error('Failed to fetch tarifa bandeira data');
+      throw new Error("Failed to fetch tarifa base data");
     }
   };
 
-  // Manipuladores de eventos para atualizar os estados
-  handleValorInicialChange = (text) => {
-    this.setState({ valorInicial: text });
+  const handleValorInicialChange = (text) => {
+    setValorInicial(text);
   };
 
-  handleValorFinalChange = (text) => {
-    this.setState({ valorFinal: text });
+  const handleValorFinalChange = (text) => {
+    setValorFinal(text);
   };
 
-  handleDateChange = (event, selectedDate) => {
-    this.setState({ showDatePicker: false });
+  const handleDateChange = (event, selectedDate) => {
+    setShowDatePicker(false);
     if (selectedDate) {
-      const day = selectedDate.getDate().toString().padStart(2, '0');
-      const month = (selectedDate.getMonth() + 1).toString().padStart(2, '0');
+      const day = selectedDate.getDate().toString().padStart(2, "0");
+      const month = (selectedDate.getMonth() + 1).toString().padStart(2, "0");
       const year = selectedDate.getFullYear();
       const formattedDate = `${day}/${month}/${year}`;
 
-      if (this.state.isStartDate) {
-        this.setState({ dataInicial: formattedDate });
+      if (isStartDate) {
+        setDataInicial(formattedDate);
       } else {
-        this.setState({ dataFinal: formattedDate });
+        setDataFinal(formattedDate);
       }
     }
   };
 
-  handleDataInicialPress = () => {
-    this.setState({ isStartDate: true, showDatePicker: true });
+  const handleDataInicialPress = () => {
+    setIsStartDate(true);
+    setShowDatePicker(true);
   };
 
-  handleDataFinalPress = () => {
-    this.setState({ isStartDate: false, showDatePicker: true });
+  const handleDataFinalPress = () => {
+    setIsStartDate(false);
+    setShowDatePicker(true);
   };
 
-  handleCalculate = () => {
-    const { valorInicial, valorFinal, dataInicial, dataFinal, tarifaConsumo, taxaIluminacao } = this.state;
+  const handleCalculate = () => {
     const valorInicialFloat = parseFloat(valorInicial);
     const valorFinalFloat = parseFloat(valorFinal);
 
@@ -132,106 +105,144 @@ export default class CalculatorScreen extends React.Component {
       const taxaIluminacaoNumber = Number(taxaIluminacao);
       const valorConsumo = (taxaConsumoNumber / 100) * valorCalculado;
       const valorTotal = valorConsumo + taxaIluminacaoNumber;
-      this.setState({
-        consumo: valorCalculado.toFixed(2),
-        valorRS: valorTotal.toFixed(2)
-      });
+      setConsumo(valorCalculado.toFixed(2));
+      dispatch(setValorRS(valorTotal.toFixed(2)));
+      setvalorRs(valorTotal.toFixed(2))
+
+      const dados = {
+        valorInicial: valorInicialFloat,
+        valorFinal: valorFinalFloat,
+        dataInicial,
+        dataFinal,
+        resultadoKwh: valorCalculado.toFixed(2),
+        resultadoPeriodo: "", // Update this property later
+        resultadoValor: valorTotal.toFixed(2),
+      };
+
+      axios
+        .post("http://192.168.0.10:3000/dados", dados)
+        .then((response) => {
+          console.log("Dados salvos com sucesso!");
+          // Handle success
+        })
+        .catch((error) => {
+          console.log("Erro ao salvar os dados:", error);
+          // Handle error
+        });
     } else {
-      this.setState({ consumo: '', valorRS: '' });
+      setConsumo("");
     }
 
     if (dataInicial && dataFinal) {
-      const [diaInicial, mesInicial, anoInicial] = dataInicial.split('/');
-      const [diaFinal, mesFinal, anoFinal] = dataFinal.split('/');
+      const [diaInicial, mesInicial, anoInicial] = dataInicial.split("/");
+      const [diaFinal, mesFinal, anoFinal] = dataFinal.split("/");
 
       const dataInicialObj = new Date(anoInicial, mesInicial - 1, diaInicial);
       const dataFinalObj = new Date(anoFinal, mesFinal - 1, diaFinal);
 
-      const periodoDias = Math.abs(dataFinalObj - dataInicialObj) / (1000 * 60 * 60 * 24);
-      this.setState({ periodo: periodoDias.toFixed(0) });
+      const periodoDias =
+        Math.abs(dataFinalObj - dataInicialObj) / (1000 * 60 * 60 * 24);
+      setPeriodo(periodoDias.toFixed(0));
     } else {
-      this.setState({ periodo: '' });
+      setPeriodo("");
     }
   };
 
-  render() {
-    const { valorInicial, valorFinal, dataInicial, dataFinal, consumo, periodo, showDatePicker, tarifaConsumo, taxaIluminacao, valorRS } = this.state;
+  return (
+    <View style={styles.container}>
+      <Text>Valor Inicial (kW):</Text>
+      <TextInput
+        value={valorInicial}
+        onChangeText={handleValorInicialChange}
+        placeholder="Valor Inicial"
+        keyboardType="numeric"
+        style={styles.input}
+      />
 
-    return (
-      <View style={styles.container}>
-        <Text>Valor Inicial (kW):</Text>
-        <TextInput
-          value={valorInicial}
-          onChangeText={this.handleValorInicialChange}
-          placeholder="Valor Inicial"
-          keyboardType="numeric"
-          style={styles.input}
-        />
+      <Text>Valor Final (kW):</Text>
+      <TextInput
+        value={valorFinal}
+        onChangeText={handleValorFinalChange}
+        placeholder="Valor Final"
+        keyboardType="numeric"
+        style={styles.input}
+      />
 
-        <Text>Valor Final (kW):</Text>
-        <TextInput
-          value={valorFinal}
-          onChangeText={this.handleValorFinalChange}
-          placeholder="Valor Final"
-          keyboardType="numeric"
-          style={styles.input}
-        />
-
-        <View style={styles.datePickerContainer}>
-          <Text>Data Inicial:</Text>
-          <Button
-            title={dataInicial || 'Selecionar'}
-            onPress={this.handleDataInicialPress}
-          />
-        </View>
-
-        <View style={styles.datePickerContainer}>
-          <Text>Data Final:</Text>
-          <Button
-            title={dataFinal || 'Selecionar'}
-            onPress={this.handleDataFinalPress}
-          />
-        </View>
-
-        {showDatePicker && (
-          <DateTimePicker
-            value={new Date()}
-            mode="date"
-            display="default"
-            onChange={this.handleDateChange}
-          />
-        )}
-
-        <Button title="Calcular" onPress={this.handleCalculate} />
-
-        <Text>Consumo Atual (kW): {consumo}</Text>
-        <Text>Período (dias): {periodo}</Text>
-        <Text>Tarifa Consumo (R$/kWh): {tarifaConsumo}</Text>
-        <Text>Taxa Iluminação (R$): {taxaIluminacao}</Text>
-        <Text>Valor (R$): {valorRS}</Text>
+      <View style={styles.datePickerContainer}>
+        <Text>Data Inicial:</Text>
+        <Button title={dataInicial || "Selecionar"} onPress={handleDataInicialPress} />
       </View>
-    );
-  }
+
+      <View style={styles.datePickerContainer}>
+        <Text>Data Final:</Text>
+        <Button title={dataFinal || "Selecionar"} onPress={handleDataFinalPress} />
+      </View>
+
+      {showDatePicker && (
+        <DateTimePicker
+          value={new Date()}
+          mode="date"
+          display="default"
+          onChange={handleDateChange}
+        />
+      )}
+
+      <Button title="Calcular" onPress={handleCalculate} />
+
+      {consumo !== "" && (
+        <Text style={styles.result}>Consumo (KWh): {consumo}</Text>
+      )}
+
+      {periodo !== "" && (
+        <Text style={styles.result}>Período (dias): {periodo}</Text>
+      )}
+
+      {tarifaConsumo && (
+        <Text style={styles.result}>Tarifa de Consumo: {tarifaConsumo}</Text>
+      )}
+
+      {taxaIluminacao && (
+        <Text style={styles.result}>Taxa de Iluminação: {taxaIluminacao}</Text>
+      )}
+
+      {valorRS !== "" && (
+        <Text style={styles.result}>Valor (R$): {valorRS}</Text>
+      )}
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
     padding: 16,
+    marginTop: 100,
+  },
+  label: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginTop: 16,
   },
   input: {
-    width: '100%',
-    height: 40,
-    borderColor: 'gray',
     borderWidth: 1,
-    marginBottom: 16,
-    paddingLeft: 8,
+    borderColor: "gray",
+    borderRadius: 4,
+    padding: 8,
+    marginTop: 8,
   },
-  datePickerContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 16,
+  result: {
+    marginTop: 16,
+    fontSize: 18,
+    fontWeight: "bold",
   },
 });
+
+const mapStateToProps = (state) => {
+  return {
+    valorRS: state.variable.valorRS,
+  };
+};
+
+
+export default connect(mapStateToProps) (CalculatorScreen);
+

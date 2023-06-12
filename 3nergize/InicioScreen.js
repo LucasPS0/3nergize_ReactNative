@@ -1,14 +1,24 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import Apresentacao from "./src/Apresentacao";
-export default function InicioScreen({ navigation }) {
+import Search from "./src/Search";
+import axios from "axios";
+import { connect } from 'react-redux';
+
+const InicioScreen = ({ navigation, valorRS }) => {
+  const [resultadoValor, setResultadoValor] = useState("");
+
+
+
   return (
     <View style={styles.container}>
-      <Text>Inicio Screen</Text>
-      <Apresentacao/>
+      <Search />
+      <Apresentacao />
     </View>
   );
 }
+
+
 
 const styles = StyleSheet.create({
   container: {
@@ -16,11 +26,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  button: {
+  resultado: {
     marginTop: 20,
-    padding: 10,
-    backgroundColor: "lightblue",
-    borderRadius: 5,
+    fontSize: 18,
+    fontWeight: "bold",
   },
 });
 
+export default InicioScreen;
