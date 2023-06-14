@@ -20,7 +20,6 @@ const CalculatorScreen = () => {
   const [valorRS, setvalorRs] = useState(null);
   const dispatch = useDispatch();
 
-
   useEffect(() => {
     fetchApiData();
   });
@@ -107,7 +106,7 @@ const CalculatorScreen = () => {
       const valorTotal = valorConsumo + taxaIluminacaoNumber;
       setConsumo(valorCalculado.toFixed(2));
       dispatch(setValorRS(valorTotal.toFixed(2)));
-      setvalorRs(valorTotal.toFixed(2))
+      setvalorRs(valorTotal.toFixed(2));
 
       const dados = {
         valorInicial: valorInicialFloat,
@@ -149,91 +148,170 @@ const CalculatorScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <Text>Valor Inicial (kW):</Text>
-      <TextInput
-        value={valorInicial}
-        onChangeText={handleValorInicialChange}
-        placeholder="Valor Inicial"
-        keyboardType="numeric"
-        style={styles.input}
-      />
+    <React.Fragment>
+      <View style={styles.container}>
+        <View style={styles.backgroundContainer}>
+          <View style={styles.inputContainer}>
+            <Text style={styles.titleElement}>Valor Inicial (kW):</Text>
+            <TextInput
+              value={valorInicial}
+              onChangeText={handleValorInicialChange}
+              keyboardType="numeric"
+              placeholder="Valor do Relógio Numérico Inicial"
+              style={styles.textInputElement}
+            />
 
-      <Text>Valor Final (kW):</Text>
-      <TextInput
-        value={valorFinal}
-        onChangeText={handleValorFinalChange}
-        placeholder="Valor Final"
-        keyboardType="numeric"
-        style={styles.input}
-      />
+            <Text style={styles.datelTitleElement}>Data Inicial:</Text>
+            <Button
+              color={"rgb(6, 163, 124)"}
+              title={dataInicial || "Selecionar"}
+              onPress={handleDataInicialPress}
+              style={fontWeight="bold"}
+            />
+          </View>
 
-      <View style={styles.datePickerContainer}>
-        <Text>Data Inicial:</Text>
-        <Button title={dataInicial || "Selecionar"} onPress={handleDataInicialPress} />
+          <View style={styles.inputContainer}>
+            <Text style={styles.titleElement}>Valor Final (kW):</Text>
+            <TextInput
+              value={valorFinal}
+              onChangeText={handleValorFinalChange}
+              keyboardType="numeric"
+              placeholder="Valor do Relógio Numérico Atual"
+              style={styles.textInputElement}
+            />
+
+            <Text style={styles.datelTitleElement}>Data Final:</Text>
+            <Button
+              color={"rgb(6, 163, 124)"}
+              title={dataFinal || "Selecionar"}
+              onPress={handleDataFinalPress}
+            />
+          </View>
+        </View>
+
+        {showDatePicker && (
+          <DateTimePicker
+            value={new Date()}
+            mode="date"
+            display="default"
+            onChange={handleDateChange}
+          />
+        )}
+
+        <View style={styles.outputContainer}>
+          {tarifaConsumo && (
+            <Text style={styles.outputElement}>
+              Tarifa de Consumo: {tarifaConsumo}
+            </Text>
+          )}
+
+          {taxaIluminacao && (
+            <Text style={styles.outputElement}>
+              Taxa de Iluminação: {taxaIluminacao}
+            </Text>
+          )}
+
+          {valorRS !== "" && (
+            <Text style={styles.outputElement}>Valor (R$): {valorRS}</Text>
+          )}
+
+          {consumo !== "" && (
+            <Text style={styles.outputElement}>Consumo (KWh): {consumo}</Text>
+          )}
+
+          {periodo !== "" && (
+            <Text style={styles.outputElement}>Período (dias): {periodo}</Text>
+          )}
+        </View>
+
+        <View style={styles.styledButtonContainer}>
+          <Button
+            color={"rgb(6, 163, 124)"}
+            title="Calcular"
+            onPress={handleCalculate}
+          />
+        </View>
       </View>
-
-      <View style={styles.datePickerContainer}>
-        <Text>Data Final:</Text>
-        <Button title={dataFinal || "Selecionar"} onPress={handleDataFinalPress} />
-      </View>
-
-      {showDatePicker && (
-        <DateTimePicker
-          value={new Date()}
-          mode="date"
-          display="default"
-          onChange={handleDateChange}
-        />
-      )}
-
-      <Button title="Calcular" onPress={handleCalculate} />
-
-      {consumo !== "" && (
-        <Text style={styles.result}>Consumo (KWh): {consumo}</Text>
-      )}
-
-      {periodo !== "" && (
-        <Text style={styles.result}>Período (dias): {periodo}</Text>
-      )}
-
-      {tarifaConsumo && (
-        <Text style={styles.result}>Tarifa de Consumo: {tarifaConsumo}</Text>
-      )}
-
-      {taxaIluminacao && (
-        <Text style={styles.result}>Taxa de Iluminação: {taxaIluminacao}</Text>
-      )}
-
-      {valorRS !== "" && (
-        <Text style={styles.result}>Valor (R$): {valorRS}</Text>
-      )}
-    </View>
+    </React.Fragment>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
+    display: "flex",
     flex: 1,
-    padding: 16,
-    marginTop: 100,
+    flexDirection: "column",
+    justifyContent: "space-evenly",
   },
-  label: {
-    fontSize: 16,
+
+  backgroundContainer: {
+    backgroundColor: "#fff",
+    margin: 12,
+    borderRadius: 12,
+    display: "flex",
+    justifyContent: "space-evenly",
+
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 0,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+
+    elevation: 2,
+  },
+
+  inputContainer: {
+    padding: 17,
+  },
+
+  titleElement: {
+    fontSize: 20,
     fontWeight: "bold",
-    marginTop: 16,
   },
-  input: {
-    borderWidth: 1,
-    borderColor: "gray",
-    borderRadius: 4,
-    padding: 8,
+
+  datelTitleElement: {
+    fontWeight: "bold",
     marginTop: 8,
+    marginBottom: 8,
   },
-  result: {
-    marginTop: 16,
-    fontSize: 18,
+
+  textInputElement: {
+    borderBottomWidth: 1,
+    textAlign: "left",
+    padding: 5,
+    marginTop: 12,
+    marginBottom: 12,
+  },
+
+  outputContainer: {
+    padding: 17,
+    margin: 12,
+    borderRadius: 12,
+
+    backgroundColor: "#fff",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 0,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 2,
+  },
+
+  outputElement: {
+    fontSize: 15,
+    marginBottom: 10,
+    borderBottomWidth: 1,
+    lineHeight: 30,
     fontWeight: "bold",
+  },
+
+  styledButtonContainer: {
+    marginLeft: 24,
+    marginRight: 24,
   },
 });
 
@@ -243,6 +321,4 @@ const mapStateToProps = (state) => {
   };
 };
 
-
-export default connect(mapStateToProps) (CalculatorScreen);
-
+export default connect(mapStateToProps)(CalculatorScreen);

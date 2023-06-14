@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet } from "react-native";
-import { connect } from 'react-redux';
+import { connect } from "react-redux";
 
 const Search = ({ valorRS }) => {
   const [valor, setValor] = useState(0);
@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     marginTop: 60,
-    width: '90%'
+    width: "90%",
   },
   leftContainer: {},
   rightContainer: {},
