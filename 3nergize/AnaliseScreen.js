@@ -1,3 +1,8 @@
+
+import React from "react";
+import { View, Text, StyleSheet } from "react-native";
+import AnalysisItem from "./src/components/AnalysisItem";
+
 import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, Dimensions } from "react-native";
 import { connect } from "react-redux";
@@ -30,7 +35,26 @@ const AnaliseScreen = ({ valorRS }) => {
   let e = valorTotal * 0.09; // Encargos
   let tr = valorTotal * 0.22; // tributos
 
+
   return (
+
+    <View style={styles.Container}>
+      <AnalysisItem value={2} type="geracao" >
+        <Text>Geração</Text>
+      </AnalysisItem>
+      <AnalysisItem value={2}>
+        <Text>Transmissão</Text>
+      </AnalysisItem>
+      <AnalysisItem value={2}>
+        <Text>Destribuição</Text>
+      </AnalysisItem>
+      <AnalysisItem value={2}>
+        <Text>Encargos</Text>
+      </AnalysisItem>
+      <AnalysisItem value={2}>
+        <Text>Tributos</Text>
+      </AnalysisItem>
+
     <View style={styles.container}>
       <View style={[styles.block, { backgroundColor: "#FFCCCC" }]}>
         <Text style={styles.title}>Geração</Text>
@@ -52,20 +76,29 @@ const AnaliseScreen = ({ valorRS }) => {
         <Text style={styles.title}>Tributos</Text>
         <Text style={styles.value}>{tr.toFixed(2)}</Text>
       </View>
+
     </View>
   );
 };
 
 
 const styles = StyleSheet.create({
-  container: {
+  Container: {
     flex: 1,
+
+    display: "flex",
+    flexDirection: "row",
+    flexWrap: "wrap",
+    alignContent: "center",
+  
+
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "space-between",
     alignItems: "center",
     marginTop: 200,
   },
+  
   block: {
     width: Dimensions.get("window").width / 2 - 30,
     height: 120,
@@ -92,6 +125,7 @@ const styles = StyleSheet.create({
   value: {
     fontSize: 16,
     color: "#000",
+
   },
 });
 
