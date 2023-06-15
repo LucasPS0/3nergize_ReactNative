@@ -11,7 +11,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { setValorRS } from "./redux/actions/variableActions";
-import { connect } from "react-redux";
+import { styles } from "./styles";
 
 const CalculatorScreen = () => {
   const [valorInicial, setValorInicial] = useState("");
@@ -24,8 +24,12 @@ const CalculatorScreen = () => {
   const [isStartDate, setIsStartDate] = useState(true);
   const [tarifaConsumo, setTarifaConsumo] = useState(null);
   const [taxaIluminacao, setTaxaIluminacao] = useState(null);
-  const [valorRS, setValorRS] = useState(null);
+
   const dispatch = useDispatch();
+
+  const valorRS = useSelector((state) => state.variable.valorRS);
+
+
 
   useEffect(() => {
     fetchApiData();
@@ -110,7 +114,7 @@ const CalculatorScreen = () => {
   const handleCalculate = () => {
     const valorInicialFloat = parseFloat(valorInicial);
     const valorFinalFloat = parseFloat(valorFinal);
-  
+
     if (!isNaN(valorInicialFloat) && !isNaN(valorFinalFloat)) {
       const valorCalculado = valorFinalFloat - valorInicialFloat;
       const taxaConsumoNumber = Number(tarifaConsumo);
@@ -119,8 +123,7 @@ const CalculatorScreen = () => {
       const valorTotal = valorConsumo + taxaIluminacaoNumber;
       setConsumo(valorCalculado.toFixed(2));
       dispatch(setValorRS(valorTotal.toFixed(2)));
-      setvalorRs(valorTotal.toFixed(2));
-  
+      setValorRS(valorTotal.toFixed(2))
       const dados = {
         valorInicial: valorInicialFloat,
         valorFinal: valorFinalFloat,
@@ -130,7 +133,7 @@ const CalculatorScreen = () => {
         resultadoPeriodo: "", // Update this property later
         resultadoValor: valorTotal.toFixed(2),
       };
-  
+
       axios
         .get("http://192.168.0.10:3000/dados")
         .then((response) => {
@@ -167,14 +170,14 @@ const CalculatorScreen = () => {
     } else {
       setConsumo("");
     }
-  
+
     if (dataInicial && dataFinal) {
       const [diaInicial, mesInicial, anoInicial] = dataInicial.split("/");
       const [diaFinal, mesFinal, anoFinal] = dataFinal.split("/");
-  
+
       const dataInicialObj = new Date(anoInicial, mesInicial - 1, diaInicial);
       const dataFinalObj = new Date(anoFinal, mesFinal - 1, diaFinal);
-  
+
       const periodoDias =
         Math.abs(dataFinalObj - dataInicialObj) / (1000 * 60 * 60 * 24);
       setPeriodo(periodoDias.toFixed(0));
@@ -182,12 +185,10 @@ const CalculatorScreen = () => {
       setPeriodo("");
     }
   };
-  
-  
 
   const handleDelete = () => {
     axios
-      .delete(`http://192.168.0.10:3000/consultas`)
+      .delete(`http://192.168.0.10:3000/dados`)
       .then((response) => {
         console.log("Todos os registros excluídos com sucesso!");
       })
@@ -247,20 +248,9 @@ const CalculatorScreen = () => {
         )}
 
         <View style={styles.outputContainer}>
-          {tarifaConsumo && (
-            <Text style={styles.outputElement}>
-              Tarifa de Consumo: {tarifaConsumo}
-            </Text>
-          )}
-
-          {taxaIluminacao && (
-            <Text style={styles.outputElement}>
-              Taxa de Iluminação: {taxaIluminacao}
-            </Text>
-          )}
-
           {valorRS !== "" && (
-            <Text style={styles.outputElement}>Valor (R$): {valorRS}</Text>
+         <Text style={styles.outputElement}>Valor (R$): {valorRS}</Text>
+
           )}
 
           {consumo !== "" && (
@@ -273,17 +263,11 @@ const CalculatorScreen = () => {
         </View>
 
         <View style={styles.styledButtonContainer}>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={handleCalculate}
-          >
+          <TouchableOpacity style={styles.button} onPress={handleCalculate}>
             <Text style={styles.buttonText}>Calcular</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity
-            style={styles.buttonDelete}
-            onPress={handleDelete}
-          >
+          <TouchableOpacity style={styles.buttonDelete} onPress={handleDelete}>
             <Text style={styles.buttonText}>Excluir</Text>
           </TouchableOpacity>
         </View>
@@ -291,107 +275,5 @@ const CalculatorScreen = () => {
     </React.Fragment>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    display: "flex",
-    flex: 1,
-    flexDirection: "column",
-    justifyContent: "space-evenly",
-  },
-
-  backgroundContainer: {
-    backgroundColor: "#fff",
-    margin: 12,
-    borderRadius: 12,
-    display: "flex",
-    justifyContent: "space-evenly",
-    position: "relative",
-    top: 20,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 0,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-
-    elevation: 2,
-  },
-
-  inputContainer: {
-    padding: 17,
-  },
-
-  titleElement: {
-    fontSize: 20,
-    fontWeight: "bold",
-  },
-
-  datelTitleElement: {
-    fontWeight: "bold",
-    marginTop: 8,
-    marginBottom: 8,
-  },
-
-  textInputElement: {
-    borderBottomWidth: 1,
-    textAlign: "left",
-    padding: 5,
-    marginTop: 12,
-    marginBottom: 12,
-  },
-
-  outputContainer: {
-    padding: 17,
-    margin: 12,
-    borderRadius: 12,
-
-    backgroundColor: "#fff",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 0,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 2,
-  },
-
-  outputElement: {
-    fontSize: 15,
-    marginBottom: 10,
-    borderBottomWidth: 1,
-    lineHeight: 30,
-    fontWeight: "bold",
-  },
-
-  styledButtonContainer: {
-    marginLeft: 24,
-    marginRight: 24,
-  },
-
-  button: {
-    alignItems: "center",
-    backgroundColor: "#06a37c",
-    padding: 10,
-    marginBottom: 10,
-    borderRadius: 8,
-  },
-
-  buttonText: {
-    color: "#fff",
-    fontSize: 18,
-    fontWeight: "bold",
-  },
-  buttonDelete: {
-    alignItems: "center",
-    backgroundColor: "red",
-    padding: 10,
-    marginBottom: 10,
-    borderRadius: 8,
-    
-  }
-});
 
 export default CalculatorScreen;

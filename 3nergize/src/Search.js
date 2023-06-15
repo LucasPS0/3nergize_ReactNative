@@ -13,6 +13,7 @@ const Search = ({ valorRS }) => {
     }
   }, [valorRS]);
 
+
   const fetchValor = async () => {
     try {
       const response = await fetch("http://192.168.0.10:3000/dados");

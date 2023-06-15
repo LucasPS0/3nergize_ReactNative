@@ -1,5 +1,5 @@
 // src/redux/store/store.js
-import { createStore, combineReducers } from 'redux';
+import { createStore, combineReducers} from 'redux';
 import variableReducer from '../reducers/variableReducer';
 
 const rootReducer = combineReducers({
