@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  Button,
+  StyleSheet,
+  TouchableOpacity,
+} from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
@@ -17,22 +24,25 @@ const CalculatorScreen = () => {
   const [isStartDate, setIsStartDate] = useState(true);
   const [tarifaConsumo, setTarifaConsumo] = useState(null);
   const [taxaIluminacao, setTaxaIluminacao] = useState(null);
-  const [valorRS, setvalorRs] = useState(null);
+  const [valorRS, setValorRS] = useState(null);
   const dispatch = useDispatch();
 
   useEffect(() => {
     fetchApiData();
-  });
+  }, []);
 
   const fetchApiData = async () => {
     try {
-      const response = await axios.get("https://apise.way2.com.br/v1/tarifas", {
-        params: {
-          apikey: "2163780d87ee4237884c498ece5ea7cc",
-          agente: "CELPE",
-          ano: "2022",
-        },
-      });
+      const response = await axios.get(
+        "https://apise.way2.com.br/v1/tarifas",
+        {
+          params: {
+            apikey: "2163780d87ee4237884c498ece5ea7cc",
+            agente: "CELPE",
+            ano: "2022",
+          },
+        }
+      );
 
       const data = response.data;
       const tarifademandatusd = data[0].tarifaconsumotusd;
@@ -43,13 +53,16 @@ const CalculatorScreen = () => {
     }
 
     try {
-      const response = await axios.get("https://apise.way2.com.br/v1/tarifas", {
-        params: {
-          apikey: "2163780d87ee4237884c498ece5ea7cc",
-          agente: "CELPE",
-          ano: "2022",
-        },
-      });
+      const response = await axios.get(
+        "https://apise.way2.com.br/v1/tarifas",
+        {
+          params: {
+            apikey: "2163780d87ee4237884c498ece5ea7cc",
+            agente: "CELPE",
+            ano: "2022",
+          },
+        }
+      );
 
       const data = response.data;
       const tarifademandatusd = data[0].tarifademandatusd;
@@ -128,23 +141,28 @@ const CalculatorScreen = () => {
               .put(`http://192.168.0.10:3000/dados/${idDadosExistentes}`, dados)
               .then((response) => {
                 console.log("Dados atualizados com sucesso!");
+                // Handle success
               })
               .catch((error) => {
                 console.log("Erro ao atualizar os dados:", error);
+                // Handle error
               });
           } else {
             axios
               .post("http://192.168.0.10:3000/dados", dados)
               .then((response) => {
                 console.log("Dados salvos com sucesso!");
+                // Handle success
               })
               .catch((error) => {
                 console.log("Erro ao salvar os dados:", error);
+                // Handle error
               });
           }
         })
         .catch((error) => {
           console.log("Erro ao obter os dados existentes:", error);
+          // Handle error
         });
     } else {
       setConsumo("");
@@ -164,6 +182,7 @@ const CalculatorScreen = () => {
       setPeriodo("");
     }
   };
+  
   
 
   const handleDelete = () => {
@@ -255,16 +274,18 @@ const CalculatorScreen = () => {
 
         <View style={styles.styledButtonContainer}>
           <TouchableOpacity
-            color={"rgb(6, 163, 124)"}
-            title="Calcular"
+            style={styles.button}
             onPress={handleCalculate}
-          />
+          >
+            <Text style={styles.buttonText}>Calcular</Text>
+          </TouchableOpacity>
 
           <TouchableOpacity
-            color="rgb(6, 163, 124)"
-            title="Excluir"
-            onPress={() => handleDelete()}
-          />
+            style={styles.buttonDelete}
+            onPress={handleDelete}
+          >
+            <Text style={styles.buttonText}>Excluir</Text>
+          </TouchableOpacity>
         </View>
       </View>
     </React.Fragment>
@@ -285,7 +306,8 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     display: "flex",
     justifyContent: "space-evenly",
-
+    position: "relative",
+    top: 20,
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -348,12 +370,28 @@ const styles = StyleSheet.create({
     marginLeft: 24,
     marginRight: 24,
   },
+
+  button: {
+    alignItems: "center",
+    backgroundColor: "#06a37c",
+    padding: 10,
+    marginBottom: 10,
+    borderRadius: 8,
+  },
+
+  buttonText: {
+    color: "#fff",
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  buttonDelete: {
+    alignItems: "center",
+    backgroundColor: "red",
+    padding: 10,
+    marginBottom: 10,
+    borderRadius: 8,
+    
+  }
 });
 
-const mapStateToProps = (state) => {
-  return {
-    valorRS: state.variable.valorRS,
-  };
-};
-
-export default connect(mapStateToProps)(CalculatorScreen);
+export default CalculatorScreen;
