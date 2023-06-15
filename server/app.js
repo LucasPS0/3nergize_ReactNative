@@ -6,7 +6,7 @@ const app = express();
 app.use(bodyParser.json());
 
 // Conectar ao banco de dados MongoDB
-mongoose.connect("mongodb://127.0.0.1/3nergize", {
+mongoose.connect("mongodb+srv://lucaspsilva:35253030@courtneysdata.vjqs1cs.mongodb.net/Dados?retryWrites=true&w=majority", {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
@@ -42,6 +42,22 @@ app.get("/dados", (req, res) => {
     });
 });
 
+app.get("/dados/:id", (req, res) => {
+  const id = req.params.id;
+
+  Dados.findById(id)
+    .then(dados => {
+      if (!dados) {
+        return res.status(404).json({ error: "Dados não encontrados" });
+      }
+      res.status(200).json(dados);
+    })
+    .catch(err => {
+      console.error("Erro ao buscar os dados:", err);
+      res.status(500).json({ error: "Erro ao buscar os dados" });
+    });
+});
+
 // Rota para buscar o último dado
 app.get("/dados/ultimo", (req, res) => {
   Dados.findOne({}, {}, { sort: { _id: -1 } })
@@ -54,27 +70,45 @@ app.get("/dados/ultimo", (req, res) => {
     });
 });
 
-// Rota para salvar os dados
 app.post("/dados", (req, res) => {
-  // Deletar todos os dados existentes antes de salvar o novo conjunto de dados
-  Dados.deleteMany({})
-    .then(() => {
-      const dados = req.body;
+  const dados = req.body;
 
-      // Criar uma nova instância do modelo Dados com os dados recebidos
-      Dados.create(dados)
-        .then(resultado => {
-          console.log("Dados salvos com sucesso!");
-          res.status(200).json({ message: "Dados salvos com sucesso!" });
-        })
-        .catch(err => {
-          console.error("Erro ao salvar os dados:", err);
-          res.status(500).json({ error: "Erro ao salvar os dados" });
-        });
+  // Criar uma nova instância do modelo Dados com os dados recebidos
+  Dados.create(dados)
+    .then(resultado => {
+      console.log("Dados salvos com sucesso!");
+      res.status(200).json({ message: "Dados salvos com sucesso!" });
     })
     .catch(err => {
-      console.error("Erro ao deletar os dados existentes:", err);
+      console.error("Erro ao salvar os dados:", err);
       res.status(500).json({ error: "Erro ao salvar os dados" });
+    });
+});
+
+app.put("/dados/:id", (req, res) => {
+  const id = req.params.id;
+  const dados = req.body;
+
+  Dados.findByIdAndUpdate(id, dados)
+    .then(() => {
+      console.log("Dados atualizados com sucesso!");
+      res.status(200).json({ message: "Dados atualizados com sucesso!" });
+    })
+    .catch(err => {
+      console.error("Erro ao atualizar os dados:", err);
+      res.status(500).json({ error: "Erro ao atualizar os dados" });
+    });
+});
+
+app.delete("/dados", (req, res) => {
+  Dados.deleteMany({})
+    .then(() => {
+      console.log("Todos os dados foram deletados");
+      res.status(200).json({ message: "Todos os dados foram deletados" });
+    })
+    .catch(err => {
+      console.error("Erro ao deletar os dados:", err);
+      res.status(500).json({ error: "Erro ao deletar os dados" });
     });
 });
 
