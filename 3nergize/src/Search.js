@@ -11,6 +11,7 @@ const Search = ({ valorRS }) => {
     } else {
       setValor(valorRS);
     }
+    console.log('Dados carregados com sucesso')
   }, [valorRS]);
 
 
