@@ -1,19 +1,13 @@
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  Button,
-  StyleSheet,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, TextInput, Button, TouchableOpacity } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { setValorRS } from "./redux/actions/variableActions";
-import { connect } from "react-redux";
+import { styles } from "./styles";
 
 const CalculatorScreen = () => {
+  // Declaração dos estados
   const [valorInicial, setValorInicial] = useState("");
   const [valorFinal, setValorFinal] = useState("");
   const [dataInicial, setDataInicial] = useState("");
@@ -24,25 +18,26 @@ const CalculatorScreen = () => {
   const [isStartDate, setIsStartDate] = useState(true);
   const [tarifaConsumo, setTarifaConsumo] = useState(null);
   const [taxaIluminacao, setTaxaIluminacao] = useState(null);
-  const [valorRS, setValorRS] = useState(null);
+
   const dispatch = useDispatch();
 
+  const valorRS = useSelector((state) => state.variable.valorRS);
+
   useEffect(() => {
+    // Chamado quando o componente é montado
     fetchApiData();
   }, []);
 
   const fetchApiData = async () => {
+    // Função assíncrona para buscar dados da API
     try {
-      const response = await axios.get(
-        "https://apise.way2.com.br/v1/tarifas",
-        {
-          params: {
-            apikey: "2163780d87ee4237884c498ece5ea7cc",
-            agente: "CELPE",
-            ano: "2022",
-          },
-        }
-      );
+      const response = await axios.get("https://apise.way2.com.br/v1/tarifas", {
+        params: {
+          apikey: "2163780d87ee4237884c498ece5ea7cc",
+          agente: "CELPE",
+          ano: "2022",
+        },
+      });
 
       const data = response.data;
       const tarifademandatusd = data[0].tarifaconsumotusd;
@@ -53,16 +48,13 @@ const CalculatorScreen = () => {
     }
 
     try {
-      const response = await axios.get(
-        "https://apise.way2.com.br/v1/tarifas",
-        {
-          params: {
-            apikey: "2163780d87ee4237884c498ece5ea7cc",
-            agente: "CELPE",
-            ano: "2022",
-          },
-        }
-      );
+      const response = await axios.get("https://apise.way2.com.br/v1/tarifas", {
+        params: {
+          apikey: "2163780d87ee4237884c498ece5ea7cc",
+          agente: "CELPE",
+          ano: "2022",
+        },
+      });
 
       const data = response.data;
       const tarifademandatusd = data[0].tarifademandatusd;
@@ -74,14 +66,17 @@ const CalculatorScreen = () => {
   };
 
   const handleValorInicialChange = (text) => {
+    // Atualiza o estado 'valorInicial' quando o texto do input é alterado
     setValorInicial(text);
   };
 
   const handleValorFinalChange = (text) => {
+    // Atualiza o estado 'valorFinal' quando o texto do input é alterado
     setValorFinal(text);
   };
 
   const handleDateChange = (event, selectedDate) => {
+    // Manipula a alteração de data selecionada no DatePicker
     setShowDatePicker(false);
     if (selectedDate) {
       const day = selectedDate.getDate().toString().padStart(2, "0");
@@ -98,20 +93,26 @@ const CalculatorScreen = () => {
   };
 
   const handleDataInicialPress = () => {
+    // Manipula o pressionamento do botão de seleção da data inicial
     setIsStartDate(true);
     setShowDatePicker(true);
   };
 
   const handleDataFinalPress = () => {
+    // Manipula o pressionamento do botão de seleção da data final
     setIsStartDate(false);
     setShowDatePicker(true);
   };
 
   const handleCalculate = () => {
+    // Função para calcular os valores com base nos estados atualizados
+
+    // Converte os valores iniciais e finais para números de ponto flutuante
     const valorInicialFloat = parseFloat(valorInicial);
     const valorFinalFloat = parseFloat(valorFinal);
-  
+
     if (!isNaN(valorInicialFloat) && !isNaN(valorFinalFloat)) {
+      // Calcula o valor do consumo, valor total e atualiza os estados
       const valorCalculado = valorFinalFloat - valorInicialFloat;
       const taxaConsumoNumber = Number(tarifaConsumo);
       const taxaIluminacaoNumber = Number(taxaIluminacao);
@@ -119,77 +120,86 @@ const CalculatorScreen = () => {
       const valorTotal = valorConsumo + taxaIluminacaoNumber;
       setConsumo(valorCalculado.toFixed(2));
       dispatch(setValorRS(valorTotal.toFixed(2)));
-      setvalorRs(valorTotal.toFixed(2));
-  
+
+      // Atualiza o valor de 'valorRS' no estado do Redux
+      setValorRS(valorTotal.toFixed(2));
+
+      // Cria objeto com os dados para envio à API
       const dados = {
         valorInicial: valorInicialFloat,
         valorFinal: valorFinalFloat,
         dataInicial,
         dataFinal,
         resultadoKwh: valorCalculado.toFixed(2),
-        resultadoPeriodo: "", // Update this property later
+        resultadoPeriodo: periodo + " Dias", // Atualizar esta propriedade posteriormente
         resultadoValor: valorTotal.toFixed(2),
       };
-  
+
       axios
-        .get("http://192.168.0.10:3000/dados")
+        .get("https://threenergize.onrender.com/dados")
         .then((response) => {
           const dadosExistentes = response.data;
           if (dadosExistentes.length > 0) {
+            // Se existem dados na API, atualiza os dados existentes
             const idDadosExistentes = dadosExistentes[0]._id;
             axios
-              .put(`http://192.168.0.10:3000/dados/${idDadosExistentes}`, dados)
+              .put(
+                `https://threenergize.onrender.com/dados/${idDadosExistentes}`,
+                dados
+              )
               .then((response) => {
                 console.log("Dados atualizados com sucesso!");
-                // Handle success
               })
               .catch((error) => {
                 console.log("Erro ao atualizar os dados:", error);
-                // Handle error
               });
           } else {
+            // Caso contrário, cria novos dados
             axios
-              .post("http://192.168.0.10:3000/dados", dados)
+              .post("https://threenergize.onrender.com/dados", dados)
               .then((response) => {
                 console.log("Dados salvos com sucesso!");
-                // Handle success
               })
               .catch((error) => {
                 console.log("Erro ao salvar os dados:", error);
-                // Handle error
+                // Lidar com o erro
               });
           }
         })
         .catch((error) => {
           console.log("Erro ao obter os dados existentes:", error);
-          // Handle error
+          // Lidar com o erro
         });
     } else {
       setConsumo("");
     }
-  
+
     if (dataInicial && dataFinal) {
+      // Se as datas inicial e final estão definidas, calcula o período em dias
       const [diaInicial, mesInicial, anoInicial] = dataInicial.split("/");
       const [diaFinal, mesFinal, anoFinal] = dataFinal.split("/");
-  
+
       const dataInicialObj = new Date(anoInicial, mesInicial - 1, diaInicial);
       const dataFinalObj = new Date(anoFinal, mesFinal - 1, diaFinal);
-  
+
       const periodoDias =
         Math.abs(dataFinalObj - dataInicialObj) / (1000 * 60 * 60 * 24);
-      setPeriodo(periodoDias.toFixed(0));
+      setPeriodo(periodoDias.toFixed(0).toString());
     } else {
       setPeriodo("");
     }
   };
-  
-  
 
   const handleDelete = () => {
+    // Função para excluir todos os registros
+
     axios
-      .delete(`http://192.168.0.10:3000/consultas`)
+      .delete(`https://threenergize.onrender.com/dados`)
       .then((response) => {
         console.log("Todos os registros excluídos com sucesso!");
+        dispatch(setValorRS(0));
+        setConsumo(0);
+        setPeriodo(0)
       })
       .catch((error) => {
         console.log("Erro ao excluir todos os registros:", error);
@@ -247,18 +257,6 @@ const CalculatorScreen = () => {
         )}
 
         <View style={styles.outputContainer}>
-          {tarifaConsumo && (
-            <Text style={styles.outputElement}>
-              Tarifa de Consumo: {tarifaConsumo}
-            </Text>
-          )}
-
-          {taxaIluminacao && (
-            <Text style={styles.outputElement}>
-              Taxa de Iluminação: {taxaIluminacao}
-            </Text>
-          )}
-
           {valorRS !== "" && (
             <Text style={styles.outputElement}>Valor (R$): {valorRS}</Text>
           )}
@@ -273,17 +271,11 @@ const CalculatorScreen = () => {
         </View>
 
         <View style={styles.styledButtonContainer}>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={handleCalculate}
-          >
+          <TouchableOpacity style={styles.button} onPress={handleCalculate}>
             <Text style={styles.buttonText}>Calcular</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity
-            style={styles.buttonDelete}
-            onPress={handleDelete}
-          >
+          <TouchableOpacity style={styles.buttonDelete} onPress={handleDelete}>
             <Text style={styles.buttonText}>Excluir</Text>
           </TouchableOpacity>
         </View>
@@ -291,107 +283,5 @@ const CalculatorScreen = () => {
     </React.Fragment>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    display: "flex",
-    flex: 1,
-    flexDirection: "column",
-    justifyContent: "space-evenly",
-  },
-
-  backgroundContainer: {
-    backgroundColor: "#fff",
-    margin: 12,
-    borderRadius: 12,
-    display: "flex",
-    justifyContent: "space-evenly",
-    position: "relative",
-    top: 20,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 0,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-
-    elevation: 2,
-  },
-
-  inputContainer: {
-    padding: 17,
-  },
-
-  titleElement: {
-    fontSize: 20,
-    fontWeight: "bold",
-  },
-
-  datelTitleElement: {
-    fontWeight: "bold",
-    marginTop: 8,
-    marginBottom: 8,
-  },
-
-  textInputElement: {
-    borderBottomWidth: 1,
-    textAlign: "left",
-    padding: 5,
-    marginTop: 12,
-    marginBottom: 12,
-  },
-
-  outputContainer: {
-    padding: 17,
-    margin: 12,
-    borderRadius: 12,
-
-    backgroundColor: "#fff",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 0,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 2,
-  },
-
-  outputElement: {
-    fontSize: 15,
-    marginBottom: 10,
-    borderBottomWidth: 1,
-    lineHeight: 30,
-    fontWeight: "bold",
-  },
-
-  styledButtonContainer: {
-    marginLeft: 24,
-    marginRight: 24,
-  },
-
-  button: {
-    alignItems: "center",
-    backgroundColor: "#06a37c",
-    padding: 10,
-    marginBottom: 10,
-    borderRadius: 8,
-  },
-
-  buttonText: {
-    color: "#fff",
-    fontSize: 18,
-    fontWeight: "bold",
-  },
-  buttonDelete: {
-    alignItems: "center",
-    backgroundColor: "red",
-    padding: 10,
-    marginBottom: 10,
-    borderRadius: 8,
-    
-  }
-});
 
 export default CalculatorScreen;

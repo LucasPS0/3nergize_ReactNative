@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import Search from "./src/Search";
 import Apresentacao from "./src/Apresentacao";
 
-const InicioScreen = ({ navigation, valorRS }) => {
+const InicioScreen = ({ valorRS }) => {
   const [valorMaximo, setValorMaximo] = useState(valorRS);
   const [modalVisible, setModalVisible] = useState(false);
   const [tempValorMaximo, setTempValorMaximo] = useState(valorRS.toString());
@@ -24,7 +24,7 @@ const InicioScreen = ({ navigation, valorRS }) => {
       <Search />
       <BarChart valorRS={valorRS} valorMaximo={valorMaximo} />
       <Button
-        title="Definir Valor Máximo"
+        title="Atualizar Meta"
         onPress={() => setModalVisible(true)}
         color="green"
         style={styles.button}
@@ -35,7 +35,7 @@ const InicioScreen = ({ navigation, valorRS }) => {
       <Modal visible={modalVisible} animationType="fade" transparent>
         <View style={styles.modalBackground}>
           <View style={styles.modalContainer}>
-            <Text style={styles.modalTitle}>Digite o Valor Máximo</Text>
+            <Text style={styles.modalTitle}>Definir Meta</Text>
             <TextInput
               style={styles.input}
               value={tempValorMaximo}
