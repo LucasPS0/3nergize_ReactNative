@@ -40,6 +40,9 @@ let Dados = new Schema({
       type: Number,
       required: true
     },
+    max_value: {
+      type: Number,
+    }
   });
 
 module.exports = mongoose.model('Dados', Dados);

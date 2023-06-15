@@ -1,9 +1,28 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, Dimensions } from "react-native";
 import { connect } from "react-redux";
 
+const fetchData = async (callback) => {
+  try {
+    const response = await fetch("https://threenergize.onrender.com/dados");
+    const data = await response.json();
+    const resultadoValor = data[0]?.resultadoValor || 0;
+    callback(resultadoValor);
+  } catch (error) {
+    console.error("Erro ao buscar valor da API:", error);
+  }
+};
+
 const AnaliseScreen = ({ valorRS }) => {
-  let valorTotal = valorRS;
+  const [valorTotal, setValorTotal] = useState(valorRS);
+
+  useEffect(() => {
+    if (valorRS === 0) {
+      fetchData(setValorTotal);
+    } else {
+      setValorTotal(valorRS);
+    }
+  }, [valorRS]);
 
   let g = valorTotal * 0.50; // Geração
   let t = valorTotal * 0.03; // Transmissão
@@ -36,6 +55,7 @@ const AnaliseScreen = ({ valorRS }) => {
     </View>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {
@@ -75,10 +95,12 @@ const styles = StyleSheet.create({
   },
 });
 
+
 const mapStateToProps = (state) => {
   return {
     valorRS: state.variable.valorRS,
   };
 };
+
 
 export default connect(mapStateToProps)(AnaliseScreen);

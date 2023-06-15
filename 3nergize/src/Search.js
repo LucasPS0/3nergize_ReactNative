@@ -16,7 +16,7 @@ const Search = ({ valorRS }) => {
 
   const fetchValor = async () => {
     try {
-      const response = await fetch("http://192.168.0.10:3000/dados");
+      const response = await fetch("https://threenergize.onrender.com/dados");
       const data = await response.json();
       const resultadoValor = data[0]?.resultadoValor || 0;
       setValor(resultadoValor);
