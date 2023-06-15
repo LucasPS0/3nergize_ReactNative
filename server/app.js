@@ -6,7 +6,7 @@ const app = express();
 app.use(bodyParser.json());
 
 // Conectar ao banco de dados MongoDB
-mongoose.connect("mongodb+srv://lucaspsilva:35253030@courtneysdata.vjqs1cs.mongodb.net/?retryWrites=true&w=majority", {
+mongoose.connect("mongodb+srv://lucaspsilva:35253030@courtneysdata.vjqs1cs.mongodb.net/Dados?retryWrites=true&w=majority", {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });

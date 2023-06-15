@@ -1,48 +1,18 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { View, StyleSheet, Button, Modal, TextInput, Text } from "react-native";
 import BarChart from "./src/BarChart";
 import { connect } from "react-redux";
 import Search from "./src/Search";
 import Apresentacao from "./src/Apresentacao";
-import axios from "axios";
-
-const API_URL = "https://threenergize.onrender.com/dados";
 
 const InicioScreen = ({ navigation, valorRS }) => {
   const [valorMaximo, setValorMaximo] = useState(valorRS);
   const [modalVisible, setModalVisible] = useState(false);
   const [tempValorMaximo, setTempValorMaximo] = useState(valorRS.toString());
 
-  useEffect(() => {
-    fetchMaxValue();
-  }, []);
-
-  const fetchMaxValue = () => {
-    axios
-      .get(API_URL)
-      .then((response) => {
-        const { max_value } = response.data;
-        setValorMaximo(max_value);
-      })
-      .catch((error) => {
-        console.error("Erro ao recuperar o valor máximo:", error);
-      });
-  };
-
-  const saveMaxValue = () => {
-    axios
-      .post(API_URL, { max_value: Number(tempValorMaximo) })
-      .then(() => {
-        setValorMaximo(Number(tempValorMaximo));
-        setModalVisible(false);
-      })
-      .catch((error) => {
-        console.error("Erro ao salvar o valor máximo:", error);
-      });
-  };
-
   const handleSave = () => {
-    saveMaxValue();
+    setValorMaximo(Number(tempValorMaximo));
+    setModalVisible(false);
   };
 
   const handleCancel = () => {
@@ -82,7 +52,6 @@ const InicioScreen = ({ navigation, valorRS }) => {
     </View>
   );
 };
-
 
 const styles = StyleSheet.create({
   container: {
@@ -128,7 +97,6 @@ const styles = StyleSheet.create({
     width: "100%", // Utiliza 100% da largura disponível
   },
 });
-
 
 const mapStateToProps = (state) => {
   return {
