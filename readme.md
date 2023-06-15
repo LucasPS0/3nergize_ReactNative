@@ -1,4 +1,4 @@
-# 3nergizer: Aplicativo de Cálculo de Consumo de Energia
+# 3nergize: Aplicativo de Cálculo de Consumo de Energia
 
 Este projeto foi desenvolvido por mim e minha equipe da faculdade para a disciplina de Programação para Dispositivos Móveis. O 3nergize é um aplicativo que permite calcular despesas diárias, semanais e mensais para o consumo de kWh em um período específico. Não é apenas um aplicativo que mede os custos de energia; ele também fornece informações sobre como esses custos são distribuídos, desde a geração de energia até os impostos aplicáveis.
 
