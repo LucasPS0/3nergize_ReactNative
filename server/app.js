@@ -6,7 +6,7 @@ const app = express();
 app.use(bodyParser.json());
 
 // Conectar ao banco de dados MongoDB
-mongoose.connect("mongodb://127.0.0.1/3nergize", {
+mongoose.connect("mongodb://falaagro:8Y05gUCLPt4kuT3WApG8Ev9Ah8TBAZvSC0GmCsQ4WchANuAzrfHQrzCUojEi6ZhtSklVAzYr2EEJACDbip4oZA==@falaagro.mongo.cosmos.azure.com:10255/?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@falaagro@", {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });

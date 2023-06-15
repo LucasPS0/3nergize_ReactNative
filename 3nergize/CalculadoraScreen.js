@@ -135,13 +135,13 @@ const CalculatorScreen = () => {
       };
 
       axios
-        .get("http://192.168.0.10:3000/dados")
+        .get("https://threenergize.onrender.com/dados")
         .then((response) => {
           const dadosExistentes = response.data;
           if (dadosExistentes.length > 0) {
             const idDadosExistentes = dadosExistentes[0]._id;
             axios
-              .put(`http://192.168.0.10:3000/dados/${idDadosExistentes}`, dados)
+              .put(`https://threenergize.onrender.com/dados/${idDadosExistentes}`, dados)
               .then((response) => {
                 console.log("Dados atualizados com sucesso!");
                 // Handle success
@@ -152,7 +152,7 @@ const CalculatorScreen = () => {
               });
           } else {
             axios
-              .post("http://192.168.0.10:3000/dados", dados)
+              .post("https://threenergize.onrender.com/dados", dados)
               .then((response) => {
                 console.log("Dados salvos com sucesso!");
                 // Handle success
