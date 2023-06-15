@@ -188,7 +188,7 @@ const CalculatorScreen = () => {
 
   const handleDelete = () => {
     axios
-      .delete(`http://192.168.0.10:3000/dados`)
+      .delete(`https://threenergize.onrender.com/dados`)
       .then((response) => {
         console.log("Todos os registros excluídos com sucesso!");
       })

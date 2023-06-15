@@ -1,17 +1,21 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Image } from "react-native";
 
-export default function AnalysisItem({ children, value, type }) {
+export default function AnalysisItem({ children, value, type, image }) {
+
+  const nada = require(`../../assets/Embrapa.jpg`);
+
   return (
     <View style={styles.Container}>
-      {"geracao" && (
-        <View style={styles.ValueContainerHeader}>
-          <Text style={styles.text}>R${value}</Text>
-        </View>
-      )}
-      <View style={styles.ValueContainerSection}>
-        <Text style={styles.text}>ICONE</Text>
+      <View style={styles.ValueContainerHeader}>
+        <Text style={styles.text}>R${value}</Text>
+
       </View>
+      <View style={styles.ValueContainerSection}>
+      <Image source={image}style={styles.image}/>
+        <Text style={styles.text}></Text>
+      </View>
+
       <Text style={styles.ValueContainerFooter}>{children}</Text>
     </View>
   );
@@ -22,7 +26,6 @@ const styles = StyleSheet.create({
     width: "45%",
     height: 200,
     margin: 10,
-
     display: "flex",
     flexDirection: "column",
     justifyContent: "space-between",
@@ -30,22 +33,26 @@ const styles = StyleSheet.create({
   },
 
   ValueContainerHeader: {
-    padding: 10,
+    padding: 15,
     textAlign: "center",
     height: "25%",
     borderRadius: 5,
     backgroundColor: "rgb(6, 163, 124)",
     color: "white",
     fontWeight: "bold",
-    fontSize: 18,  },
+    fontSize: 18,
+  },
 
   ValueContainerSection: {
-    padding: 10,
+    paddingTop: 0,
     textAlign: "center",
+    alignItems: "center",
+    justifyContent: "center",
+    display: "flex",
   },
 
   ValueContainerFooter: {
-    padding: 10,
+    padding: 8,
     alignItems: "center",
     borderRadius: 5,
     textAlign: "center",
@@ -59,5 +66,13 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontWeight: "bold",
     fontSize: 18,
+  },
+
+  image: {
+
+    marginTop: 15,
+    width: 80,
+    height: 80,
+    alignSelf: "center",
   },
 });

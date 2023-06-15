@@ -1,11 +1,7 @@
-
-import React from "react";
-import { View, Text, StyleSheet } from "react-native";
-import AnalysisItem from "./src/components/AnalysisItem";
-
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, Dimensions } from "react-native";
+import { View, Text, StyleSheet, Image } from "react-native";
 import { connect } from "react-redux";
+import AnalysisItem from "./src/components/AnalysisItem";
 
 const fetchData = async (callback) => {
   try {
@@ -36,85 +32,40 @@ const AnaliseScreen = ({ valorRS }) => {
   let tr = valorTotal * 0.22; // tributos
 
 
-  return (
 
-    <View style={styles.Container}>
-      <AnalysisItem value={2} type="geracao" >
+
+
+  return (
+    <View style={styles.container}>
+      <AnalysisItem value={g.toFixed(2)} image={require("./assets/raio.png")}>
         <Text>Geração</Text>
+ 
+
       </AnalysisItem>
-      <AnalysisItem value={2}>
+      <AnalysisItem value={t.toFixed(2)} image={require("./assets/torre.png")}>
         <Text>Transmissão</Text>
       </AnalysisItem>
-      <AnalysisItem value={2}>
-        <Text>Destribuição</Text>
+      <AnalysisItem value={d.toFixed(2)}  image={require("./assets/painel-eletrico.png")}>
+        <Text>Distribuição</Text>
       </AnalysisItem>
-      <AnalysisItem value={2}>
+      <AnalysisItem value={e.toFixed(2)}  image={require("./assets/money-bag.png")} >
         <Text>Encargos</Text>
       </AnalysisItem>
-      <AnalysisItem value={2}>
+      <AnalysisItem value={tr.toFixed(2)}image={require("./assets/docs.png")} >
         <Text>Tributos</Text>
       </AnalysisItem>
-
-    <View style={styles.container}>
-      <View style={[styles.block, { backgroundColor: "#FFCCCC" }]}>
-        <Text style={styles.title}>Geração</Text>
-        <Text style={styles.value}>{g.toFixed(2)}</Text>
-      </View>
-      <View style={[styles.block, { backgroundColor: "#CCFFCC" }]}>
-        <Text style={styles.title}>Transmissão</Text>
-        <Text style={styles.value}>{t.toFixed(2)}</Text>
-      </View>
-      <View style={[styles.block, { backgroundColor: "#CCCCFF" }]}>
-        <Text style={styles.title}>Distribuição</Text>
-        <Text style={styles.value}>{d.toFixed(2)}</Text>
-      </View>
-      <View style={[styles.block, { backgroundColor: "#FFFFCC" }]}>
-        <Text style={styles.title}>Encargos</Text>
-        <Text style={styles.value}>{e.toFixed(2)}</Text>
-      </View>
-      <View style={[styles.block, { backgroundColor: "#FFFFCC" }]}>
-        <Text style={styles.title}>Tributos</Text>
-        <Text style={styles.value}>{tr.toFixed(2)}</Text>
-      </View>
-
     </View>
   );
 };
 
-
 const styles = StyleSheet.create({
-  Container: {
+  container: {
     flex: 1,
-
-    display: "flex",
-    flexDirection: "row",
-    flexWrap: "wrap",
-    alignContent: "center",
-  
-
+    marginTop: 80,
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "space-between",
     alignItems: "center",
-    marginTop: 200,
-  },
-  
-  block: {
-    width: Dimensions.get("window").width / 2 - 30,
-    height: 120,
-    marginVertical: 10,
-    marginHorizontal: 10,
-    borderRadius: 8,
-    alignItems: "center",
-    justifyContent: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
   },
   title: {
     fontSize: 18,
@@ -125,16 +76,13 @@ const styles = StyleSheet.create({
   value: {
     fontSize: 16,
     color: "#000",
-
   },
 });
-
 
 const mapStateToProps = (state) => {
   return {
     valorRS: state.variable.valorRS,
   };
 };
-
 
 export default connect(mapStateToProps)(AnaliseScreen);
