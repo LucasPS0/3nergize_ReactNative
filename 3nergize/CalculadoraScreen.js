@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TextInput, Button, StyleSheet } from "react-native";
+import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
@@ -147,6 +147,17 @@ const CalculatorScreen = () => {
     }
   };
 
+  const handleDelete = () => {
+    axios
+      .delete(`http://192.168.0.10:3000/consultas`)
+      .then((response) => {
+        console.log("Todos os registros excluídos com sucesso!");
+      })
+      .catch((error) => {
+        console.log("Erro ao excluir todos os registros:", error);
+      });
+  };
+
   return (
     <React.Fragment>
       <View style={styles.container}>
@@ -166,7 +177,6 @@ const CalculatorScreen = () => {
               color={"rgb(6, 163, 124)"}
               title={dataInicial || "Selecionar"}
               onPress={handleDataInicialPress}
-              style={fontWeight="bold"}
             />
           </View>
 
@@ -225,10 +235,16 @@ const CalculatorScreen = () => {
         </View>
 
         <View style={styles.styledButtonContainer}>
-          <Button
+          <TouchableOpacity
             color={"rgb(6, 163, 124)"}
             title="Calcular"
             onPress={handleCalculate}
+          />
+
+          <TouchableOpacity
+            color="rgb(6, 163, 124)"
+            title="Excluir"
+            onPress={() => handleDelete()}
           />
         </View>
       </View>
