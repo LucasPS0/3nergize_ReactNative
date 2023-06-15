@@ -250,7 +250,8 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     display: "flex",
     justifyContent: "space-evenly",
-
+    position: "relative",
+    top: 20,
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
