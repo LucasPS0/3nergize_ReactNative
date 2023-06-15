@@ -7,19 +7,19 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
   },
   title: {
-    fontSize: 24,
+    fontSize: 34,
     fontWeight: "bold",
     marginBottom: 10,
   },
   subtitle: {
-    fontSize: 18,
+    fontSize: 22,
     marginBottom: 10,
   },
   description: {
-    fontSize: 14,
+    fontSize: 24,
     marginBottom: 5,
   },
   paragraph: {
-    fontSize: 12,
+    fontSize: 15,
   },
 });

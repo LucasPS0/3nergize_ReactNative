@@ -17,6 +17,12 @@ Link para o aplicativo: [3nergize](https://expo.dev/artifacts/eas/wnnJbjmwXrwpJQ
 
 ## Funcionalidades:
 
+O aplicativo 3nergizer realiza as seguintes tarefas:
+
+- Permite ao usuário inserir o consumo de energia em kWh e o período de tempo.
+- Calcula os custos de energia com base no consumo e no período selecionado.
+- Exibe informações detalhadas sobre como os custos são distribuídos, incluindo geração de energia e impostos aplicáveis.
+- Oferece uma interface amigável e responsiva.
 ## Imagens: 
 
 
