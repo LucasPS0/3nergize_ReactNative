@@ -97,7 +97,7 @@ const CalculatorScreen = () => {
   const handleCalculate = () => {
     const valorInicialFloat = parseFloat(valorInicial);
     const valorFinalFloat = parseFloat(valorFinal);
-
+  
     if (!isNaN(valorInicialFloat) && !isNaN(valorFinalFloat)) {
       const valorCalculado = valorFinalFloat - valorInicialFloat;
       const taxaConsumoNumber = Number(tarifaConsumo);
@@ -107,7 +107,7 @@ const CalculatorScreen = () => {
       setConsumo(valorCalculado.toFixed(2));
       dispatch(setValorRS(valorTotal.toFixed(2)));
       setvalorRs(valorTotal.toFixed(2));
-
+  
       const dados = {
         valorInicial: valorInicialFloat,
         valorFinal: valorFinalFloat,
@@ -117,28 +117,46 @@ const CalculatorScreen = () => {
         resultadoPeriodo: "", // Update this property later
         resultadoValor: valorTotal.toFixed(2),
       };
-
+  
       axios
-        .post("http://192.168.0.10:3000/dados", dados)
+        .get("http://192.168.0.10:3000/dados")
         .then((response) => {
-          console.log("Dados salvos com sucesso!");
-          // Handle success
+          const dadosExistentes = response.data;
+          if (dadosExistentes.length > 0) {
+            const idDadosExistentes = dadosExistentes[0]._id;
+            axios
+              .put(`http://192.168.0.10:3000/dados/${idDadosExistentes}`, dados)
+              .then((response) => {
+                console.log("Dados atualizados com sucesso!");
+              })
+              .catch((error) => {
+                console.log("Erro ao atualizar os dados:", error);
+              });
+          } else {
+            axios
+              .post("http://192.168.0.10:3000/dados", dados)
+              .then((response) => {
+                console.log("Dados salvos com sucesso!");
+              })
+              .catch((error) => {
+                console.log("Erro ao salvar os dados:", error);
+              });
+          }
         })
         .catch((error) => {
-          console.log("Erro ao salvar os dados:", error);
-          // Handle error
+          console.log("Erro ao obter os dados existentes:", error);
         });
     } else {
       setConsumo("");
     }
-
+  
     if (dataInicial && dataFinal) {
       const [diaInicial, mesInicial, anoInicial] = dataInicial.split("/");
       const [diaFinal, mesFinal, anoFinal] = dataFinal.split("/");
-
+  
       const dataInicialObj = new Date(anoInicial, mesInicial - 1, diaInicial);
       const dataFinalObj = new Date(anoFinal, mesFinal - 1, diaFinal);
-
+  
       const periodoDias =
         Math.abs(dataFinalObj - dataInicialObj) / (1000 * 60 * 60 * 24);
       setPeriodo(periodoDias.toFixed(0));
@@ -146,6 +164,7 @@ const CalculatorScreen = () => {
       setPeriodo("");
     }
   };
+  
 
   const handleDelete = () => {
     axios
